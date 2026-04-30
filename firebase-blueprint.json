@@ -1,0 +1,696 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores teacher profile and preferences.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "schoolName": { "type": "string" },
+        "preferredGrade": { "type": "string" },
+        "preferredSubject": { "type": "string" },
+        "teachingModel": { "type": "string", "enum": ["5E", "Competency-based", "Inquiry-based", "Direct instruction"] },
+        "lessonDetail": { "type": "string", "enum": ["Short", "Standard", "Detailed", "Observation-Ready"] },
+        "curriculumStructure": { "type": "string", "enum": ["Terms", "Cycles"] }
+      },
+      "required": ["name", "email"]
+    },
+    "CurriculumEntry": {
+      "title": "Curriculum Entry",
+      "description": "A structured learning outcome extracted from a curriculum guide.",
+      "type": "object",
+      "properties": {
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "strand": { "type": "string" },
+        "cycle": { "type": "number" },
+        "topic": { "type": "string" },
+        "subtopic": { "type": "string" },
+        "learning_outcomes": { "type": "array", "items": { "type": "string" } },
+        "assessment_suggestions": { "type": "array", "items": { "type": "string" } },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["grade", "subject", "topic", "learning_outcomes", "createdBy"]
+    },
+    "CurriculumUnit": {
+      "title": "Curriculum Unit",
+      "description": "A structured unit from a teacher's guide.",
+      "type": "object",
+      "properties": {
+        "unitNumber": { "type": "string" },
+        "unitTitle": { "type": "string" },
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "outcomes": { "type": "array", "items": { "type": "string" } },
+        "competencies": { "type": "array", "items": { "type": "string" } },
+        "timeAllocation": { "type": "string" },
+        "weeklyBreakdown": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "week": { "type": "number" },
+              "focus": { "type": "string" },
+              "activities": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "readingFocus": { "type": "string" },
+        "speakingListeningFocus": { "type": "string" },
+        "languageFocus": { "type": "string" },
+        "wordWorkFocus": { "type": "string" },
+        "writingFocus": { "type": "string" },
+        "studentBookPages": { "type": "string" },
+        "workbookPages": { "type": "string" },
+        "teachingNotes": { "type": "string" },
+        "supportSuggestions": { "type": "string" },
+        "extensionSuggestions": { "type": "string" },
+        "additionalSkillsPractice": { "type": "string" },
+        "answersGuidance": { "type": "string" },
+        "source": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["unitNumber", "unitTitle", "grade", "subject", "outcomes", "createdBy"]
+    },
+    "LessonPlan": {
+      "title": "Lesson Plan",
+      "description": "A generated lesson plan.",
+      "type": "object",
+      "properties": {
+        "lessonTitle": { "type": "string" },
+        "studentTeacherName": { "type": "string" },
+        "date": { "type": "string" },
+        "classSize": { "type": "string" },
+        "ageRange": { "type": "string" },
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "cycle": { "type": "number" },
+        "week": { "type": "number" },
+        "topic": { "type": "string" },
+        "subtopic": { "type": "string" },
+        "duration": { "type": "string" },
+        "teachingModel": { "type": "string" },
+        "learning_outcomes": { "type": "array", "items": { "type": "string" } },
+        "previousKnowledge": { "type": "string" },
+        "generalObjective": { "type": "string" },
+        "specificObjectives": { "type": "array", "items": { "type": "string" } },
+        "keyVocabulary": { "type": "array", "items": { "type": "string" } },
+        "materials": { "type": "array", "items": { "type": "string" } },
+        "setInduction": { "type": "string" },
+        "developmentSteps": { "type": "string" },
+        "guidedPractice": { "type": "string" },
+        "independentPractice": { "type": "string" },
+        "differentiation": { "type": "string" },
+        "assessment": { "type": "string" },
+        "closure": { "type": "string" },
+        "homework": { "type": "string" },
+        "reflection": { "type": "string" },
+        "teacherScript": { "type": "string" },
+        "status": { "type": "string", "enum": ["Not Started", "Planned", "Taught", "Completed", "Skipped", "Postponed", "Needs Review", "Partially Taught"] },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["lessonTitle", "grade", "subject", "topic", "generalObjective", "specificObjectives", "createdBy"]
+    },
+    "WeeklyPlan": {
+      "title": "Weekly Plan",
+      "description": "A curriculum map for a cycle.",
+      "type": "object",
+      "properties": {
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "cycle": { "type": "number" },
+        "weeks": { 
+          "type": "array", 
+          "items": { 
+            "type": "object",
+            "properties": {
+              "week": { "type": "number" },
+              "focus": { "type": "string" },
+              "topics": { "type": "array", "items": { "type": "string" } },
+              "learning_outcomes": { "type": "array", "items": { "type": "string" } },
+              "lesson_count": { "type": "number" },
+              "assessment_type": { "type": "string" },
+              "review_suggestion": { "type": "string" },
+              "teaching_notes": { "type": "string" }
+            }
+          } 
+        },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["grade", "subject", "cycle", "weeks", "createdBy"]
+    },
+    "WeeklyCurriculumPlan": {
+      "title": "Weekly Curriculum Plan",
+      "description": "A detailed curriculum-driven plan for a specific week.",
+      "type": "object",
+      "properties": {
+        "grade_level": { "type": "string" },
+        "subject": { "type": "string" },
+        "cycle": { "type": "number" },
+        "week_number": { "type": "number" },
+        "weekly_topic": { "type": "string" },
+        "weekly_subtopics": { "type": "array", "items": { "type": "string" } },
+        "weekly_learning_outcomes": { "type": "array", "items": { "type": "string" } },
+        "number_of_days": { "type": "number" },
+        "daily_lesson_titles": { "type": "array", "items": { "type": "string" } },
+        "daily_objectives": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } },
+        "suggested_assessment": { "type": "string" },
+        "teacher_notes": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["grade_level", "subject", "cycle", "week_number", "weekly_topic", "weekly_learning_outcomes", "number_of_days", "createdBy"]
+    },
+    "DailyLessonPlan": {
+      "title": "Daily Lesson Plan",
+      "description": "A specific lesson plan for a single day, linked to a weekly plan.",
+      "type": "object",
+      "properties": {
+        "weekly_plan_id": { "type": "string" },
+        "day_number": { "type": "number" },
+        "lesson_title": { "type": "string" },
+        "topic": { "type": "string" },
+        "subtopic": { "type": "string" },
+        "learning_outcome": { "type": "string" },
+        "specific_daily_objectives": { "type": "array", "items": { "type": "string" } },
+        "generated_lesson_content": { "type": "string" },
+        "structured_json": { "type": "object" },
+        "status": { "type": "string", "enum": ["Not Started", "Planned", "Taught", "Completed", "Skipped", "Postponed", "Needs Review", "Partially Taught"] },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["weekly_plan_id", "day_number", "lesson_title", "topic", "createdBy"]
+    },
+    "Resource": {
+      "title": "Resource",
+      "description": "A generated teaching resource.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "resource_type": { "type": "string" },
+        "grade_level": { "type": "string" },
+        "subject": { "type": "string" },
+        "cycle": { "type": "number" },
+        "week": { "type": "number" },
+        "topic": { "type": "string" },
+        "subtopic": { "type": "string" },
+        "learning_outcome": { "type": "string" },
+        "generated_content": { "type": "string" },
+        "status": { "type": "string", "enum": ["Not Generated", "Generated", "Edited", "Printed", "Downloaded", "Needs Review", "Archived"] },
+        "lessonId": { "type": "string" },
+        "isFavorite": { "type": "boolean" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "resource_type", "grade_level", "subject", "cycle", "topic", "generated_content", "createdBy"]
+    },
+    "TeachingCollection": {
+      "title": "Teaching Collection",
+      "description": "A custom folder or collection of teaching materials.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "itemIds": { 
+          "type": "array", 
+          "items": { 
+            "type": "object",
+            "properties": {
+              "type": { "type": "string", "enum": ["lesson", "resource", "plan"] },
+              "id": { "type": "string" }
+            }
+          } 
+        },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "itemIds", "createdBy"]
+    },
+    "FavoriteItem": {
+      "title": "Favorite Item",
+      "description": "A starred or favorited item.",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["lesson", "resource", "plan", "cycle-plan"] },
+        "itemId": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["type", "itemId", "createdBy"]
+    },
+    "VersionRecord": {
+      "title": "Version Record",
+      "description": "A saved version of a plan or resource.",
+      "type": "object",
+      "properties": {
+        "itemId": { "type": "string" },
+        "itemType": { "type": "string", "enum": ["lesson", "resource", "plan"] },
+        "versionNumber": { "type": "number" },
+        "content": { "type": "object" },
+        "note": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["itemId", "itemType", "versionNumber", "content", "createdBy"]
+    },
+    "Class": {
+      "title": "Class",
+      "description": "A specific class taught by a teacher.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "grade": { "type": "string" },
+        "section": { "type": "string" },
+        "teacherId": { "type": "string" },
+        "schoolYear": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "grade", "teacherId", "schoolYear", "createdAt"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "A student in a specific class.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "classId": { "type": "string" },
+        "grade": { "type": "string" },
+        "gender": { "type": "string", "enum": ["Male", "Female", "Other"] },
+        "dateOfBirth": { "type": "string", "format": "date" },
+        "guardianName": { "type": "string" },
+        "guardianContact": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "classId", "grade", "createdBy", "createdAt"]
+    },
+    "AttendanceRecord": {
+      "title": "Attendance Record",
+      "description": "Daily attendance for a class.",
+      "type": "object",
+      "properties": {
+        "classId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "studentId": { "type": "string" },
+              "status": { "type": "string", "enum": ["Present", "Absent", "Late", "Excused"] },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["classId", "date", "records", "createdBy", "createdAt"]
+    },
+    "VisualResource": {
+      "title": "Visual Resource",
+      "description": "A generated visual teaching aid (anchor chart, poster, etc.).",
+      "type": "object",
+      "properties": {
+        "lessonId": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "labels": { "type": "array", "items": { "type": "string" } },
+        "keyFacts": { "type": "array", "items": { "type": "string" } },
+        "studentFriendlyWording": { "type": "string" },
+        "illustrationsNeeded": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["lessonId", "title", "imageUrl", "createdBy"]
+    },
+    "CurriculumProgress": {
+      "title": "Curriculum Progress",
+      "description": "Tracks progress of curriculum items.",
+      "type": "object",
+      "properties": {
+        "grade_level": { "type": "string" },
+        "subject": { "type": "string" },
+        "cycle": { "type": "number" },
+        "curriculum_item_id": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "in-progress", "completed"] },
+        "week_assigned": { "type": "number" },
+        "createdBy": { "type": "string" },
+        "completed_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["grade_level", "subject", "cycle", "curriculum_item_id", "status", "createdBy"]
+    },
+    "YearlyCalendarPlan": {
+      "title": "Yearly Calendar Plan",
+      "description": "A full school year teaching calendar.",
+      "type": "object",
+      "properties": {
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "schoolYear": { "type": "string" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "days": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "date": { "type": "string" },
+              "subject": { "type": "string" },
+              "grade": { "type": "string" },
+              "topic": { "type": "string" },
+              "subtopic": { "type": "string" },
+              "lessonTitle": { "type": "string" },
+              "objective": { "type": "string" },
+              "cycle": { "type": "number" },
+              "week": { "type": "number" },
+              "dayNumber": { "type": "number" },
+              "status": { "type": "string", "enum": ["Not Started", "Planned", "Taught", "Completed", "Skipped", "Postponed", "Needs Review", "Partially Taught"] },
+              "isHoliday": { "type": "boolean" },
+              "holidayName": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "holidays": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": { "type": "string" },
+              "name": { "type": "string" }
+            }
+          }
+        },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["grade", "subject", "schoolYear", "days", "createdBy"]
+    },
+    "CyclePacingMap": {
+      "title": "Cycle Pacing Map",
+      "description": "A mapping of topics to weeks for a specific cycle.",
+      "type": "object",
+      "properties": {
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "cycle": { "type": "number" },
+        "totalWeeks": { "type": "number" },
+        "weeks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "weekNumber": { "type": "number" },
+              "topic": { "type": "string" },
+              "subtopics": { "type": "array", "items": { "type": "string" } },
+              "duration": { "type": "number" },
+              "focus": { "type": "string" },
+              "learningOutcomes": { "type": "array", "items": { "type": "string" } },
+              "isReview": { "type": "boolean" },
+              "isAssessment": { "type": "boolean" }
+            }
+          }
+        },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["grade", "subject", "cycle", "totalWeeks", "weeks", "createdBy"]
+    },
+    "AssessmentRecord": {
+      "title": "Assessment Record",
+      "description": "A record of a lesson's delivery and assessment results.",
+      "type": "object",
+      "properties": {
+        "lessonId": { "type": "string" },
+        "lessonType": { "type": "string" },
+        "lessonTitle": { "type": "string" },
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "cycle": { "type": "number" },
+        "week": { "type": "number" },
+        "deliveryStatus": { "type": "string" },
+        "understandingLevel": { "type": "string" },
+        "objectiveMastery": { "type": "string" },
+        "classPerformanceNotes": { "type": "object" },
+        "results": { "type": "object" },
+        "misconceptionsLogged": { "type": "array", "items": { "type": "string" } },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["lessonId", "lessonType", "lessonTitle", "grade", "subject", "cycle", "deliveryStatus", "understandingLevel", "objectiveMastery", "createdBy"]
+    },
+    "OutcomeMastery": {
+      "title": "Outcome Mastery",
+      "description": "Tracks mastery of specific learning outcomes.",
+      "type": "object",
+      "properties": {
+        "outcome": { "type": "string" },
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "strand": { "type": "string" },
+        "topic": { "type": "string" },
+        "status": { "type": "string" },
+        "lastAssessed": { "type": "string", "format": "date-time" },
+        "relatedLessonIds": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["outcome", "grade", "subject", "topic", "status", "createdBy"]
+    },
+    "StudentSupportFlag": {
+      "title": "Student Support Flag",
+      "description": "General support needs for a class.",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "studentCount": { "type": "number" },
+        "notes": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["category", "description", "studentCount", "createdBy"]
+    },
+    "MisconceptionLog": {
+      "title": "Misconception Log",
+      "description": "A log of common student errors and misconceptions.",
+      "type": "object",
+      "properties": {
+        "subject": { "type": "string" },
+        "topic": { "type": "string" },
+        "misconception": { "type": "string" },
+        "frequency": { "type": "number" },
+        "lastNoticed": { "type": "string", "format": "date-time" },
+        "suggestedCorrection": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["subject", "topic", "misconception", "frequency", "createdBy"]
+    },
+    "AcademicCalendar": {
+      "title": "Academic Calendar",
+      "description": "Official school year calendar with cycles and events.",
+      "type": "object",
+      "properties": {
+        "schoolYear": { "type": "string" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "cycles": { "type": "array", "items": { "type": "object" } },
+        "events": { "type": "array", "items": { "type": "object" } },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["schoolYear", "startDate", "endDate", "cycles", "createdBy"]
+    },
+    "YearlyCurriculumMap": {
+      "title": "Yearly Curriculum Map",
+      "description": "Curriculum spread across 4 cycles.",
+      "type": "object",
+      "properties": {
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "schoolYear": { "type": "string" },
+        "cycles": { "type": "array", "items": { "type": "object" } },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["grade", "subject", "schoolYear", "cycles", "createdBy"]
+    },
+    "CyclePlan": {
+      "title": "Cycle Plan",
+      "description": "Detailed roadmap for a specific cycle.",
+      "type": "object",
+      "properties": {
+        "mapId": { "type": "string" },
+        "cycleNumber": { "type": "number" },
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "weeks": { "type": "array", "items": { "type": "object" } },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["mapId", "cycleNumber", "grade", "subject", "weeks", "createdBy"]
+    },
+    "WeeklyTeachingPlan": {
+      "title": "Weekly Teaching Plan",
+      "description": "Daily roadmap for a specific week.",
+      "type": "object",
+      "properties": {
+        "cyclePlanId": { "type": "string" },
+        "cycleNumber": { "type": "number" },
+        "weekNumber": { "type": "number" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "days": { "type": "array", "items": { "type": "object" } },
+        "isReadyToTeach": { "type": "boolean" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["cyclePlanId", "cycleNumber", "weekNumber", "grade", "subject", "days", "createdBy"]
+    },
+    "CoverageRecord": {
+      "title": "Coverage Record",
+      "description": "Tracks coverage of specific outcomes.",
+      "type": "object",
+      "properties": {
+        "grade": { "type": "string" },
+        "subject": { "type": "string" },
+        "outcome": { "type": "string" },
+        "status": { "type": "string" },
+        "lastTaughtDate": { "type": "string", "format": "date" },
+        "relatedLessonIds": { "type": "array", "items": { "type": "string" } },
+        "cycleNumber": { "type": "number" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["grade", "subject", "outcome", "status", "cycleNumber", "createdBy"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile documents."
+    },
+    "/classes/{classId}": {
+      "schema": "Class",
+      "description": "Classes taught by teachers."
+    },
+    "/students/{studentId}": {
+      "schema": "Student",
+      "description": "Student records."
+    },
+    "/attendance/{recordId}": {
+      "schema": "AttendanceRecord",
+      "description": "Daily attendance records."
+    },
+    "/curriculum/{entryId}": {
+      "schema": "CurriculumEntry",
+      "description": "Structured curriculum library items."
+    },
+    "/curriculum_units/{unitId}": {
+      "schema": "CurriculumUnit",
+      "description": "Structured curriculum units from teacher guides."
+    },
+    "/lesson_plans/{planId}": {
+      "schema": "LessonPlan",
+      "description": "Saved lesson plans."
+    },
+    "/weekly_plans/{planId}": {
+      "schema": "WeeklyPlan",
+      "description": "Saved weekly maps."
+    },
+    "/resources/{resourceId}": {
+      "schema": "Resource",
+      "description": "Saved teaching resources.",
+      "visuals": {
+        "schema": "VisualResource",
+        "description": "Visual aids for a specific resource."
+      }
+    },
+    "/curriculum_progress/{progressId}": {
+      "schema": "CurriculumProgress",
+      "description": "Curriculum progress tracking."
+    },
+    "/yearly_calendars/{calendarId}": {
+      "schema": "YearlyCalendarPlan",
+      "description": "Year-long teaching calendars."
+    },
+    "/daily_lesson_plans/{planId}": {
+      "schema": "DailyLessonPlan",
+      "description": "Daily lesson plans linked to weekly plans.",
+      "visuals": {
+        "schema": "VisualResource",
+        "description": "Visual aids for a specific daily lesson plan."
+      }
+    },
+    "/weekly_curriculum_plans/{planId}": {
+      "schema": "WeeklyCurriculumPlan",
+      "description": "Detailed weekly curriculum plans."
+    },
+    "/cycle_pacing_maps/{mapId}": {
+      "schema": "CyclePacingMap",
+      "description": "Cycle pacing maps."
+    },
+    "/assessment_records/{recordId}": {
+      "schema": "AssessmentRecord",
+      "description": "Lesson assessment records."
+    },
+    "/outcome_mastery/{masteryId}": {
+      "schema": "OutcomeMastery",
+      "description": "Learning outcome mastery tracking."
+    },
+    "/student_support_flags/{flagId}": {
+      "schema": "StudentSupportFlag",
+      "description": "Class-level student support flags."
+    },
+    "/misconception_logs/{logId}": {
+      "schema": "MisconceptionLog",
+      "description": "Common student misconceptions log."
+    },
+    "/academic_calendars/{calendarId}": {
+      "schema": "AcademicCalendar",
+      "description": "School academic calendars."
+    },
+    "/yearly_curriculum_maps/{mapId}": {
+      "schema": "YearlyCurriculumMap",
+      "description": "Yearly curriculum maps."
+    },
+    "/cycle_plans/{planId}": {
+      "schema": "CyclePlan",
+      "description": "Cycle-based teaching plans."
+    },
+    "/weekly_teaching_plans/{planId}": {
+      "schema": "WeeklyTeachingPlan",
+      "description": "Weekly teaching roadmap plans."
+    },
+    "/coverage_records/{recordId}": {
+      "schema": "CoverageRecord",
+      "description": "Curriculum coverage records."
+    },
+    "/teaching_collections/{collectionId}": {
+      "schema": "TeachingCollection",
+      "description": "Custom teaching collections."
+    },
+    "/favorite_items/{favoriteId}": {
+      "schema": "FavoriteItem",
+      "description": "User favorited items."
+    },
+    "/version_records/{versionId}": {
+      "schema": "VersionRecord",
+      "description": "Saved versions of materials."
+    },
+    "/lesson_plans/{planId}/visuals/{visualId}": {
+      "schema": "VisualResource",
+      "description": "Visual aids for a specific lesson plan."
+    }
+  }
+}

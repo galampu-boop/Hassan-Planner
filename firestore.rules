@@ -1,0 +1,225 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.createdBy;
+    }
+    
+    function uidUnchanged() {
+      return !('createdBy' in request.resource.data) || 
+             request.resource.data.createdBy == request.auth.uid;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "galampu@gmail.com" && request.auth.token.email_verified == true);
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+    // Classes
+    match /classes/{classId} {
+      allow read: if isAuthenticated() && (isAdmin() || (resource == null || resource.data.teacherId == request.auth.uid));
+      allow create: if isAuthenticated() && request.resource.data.teacherId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && (isAdmin() || resource.data.teacherId == request.auth.uid);
+    }
+
+    // Students
+    match /students/{studentId} {
+      allow read: if isAuthenticated() && (isAdmin() || (resource == null || resource.data.createdBy == request.auth.uid));
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Attendance
+    match /attendance/{recordId} {
+      allow read: if isAuthenticated() && (isAdmin() || (resource == null || resource.data.createdBy == request.auth.uid));
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Curriculum Library
+    match /curriculum/{entryId} {
+      allow read: if isAuthenticated() && (isAdmin() || (resource == null || resource.data.createdBy == request.auth.uid || resource.data.isPublic == true));
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Curriculum Units
+    match /curriculum_units/{unitId} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || resource.data.isPublic == true || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Weekly Curriculum Plans
+    match /weekly_curriculum_plans/{planId} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Daily Lesson Plans
+    match /daily_lesson_plans/{planId} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+
+      match /visuals/{visualId} {
+        allow read: if isAuthenticated() && (get(/databases/$(database)/documents/daily_lesson_plans/$(planId)).data.createdBy == request.auth.uid || isAdmin());
+        allow create: if isAuthenticated() && get(/databases/$(database)/documents/daily_lesson_plans/$(planId)).data.createdBy == request.auth.uid;
+        allow update, delete: if isAuthenticated() && (get(/databases/$(database)/documents/daily_lesson_plans/$(planId)).data.createdBy == request.auth.uid || isAdmin());
+      }
+    }
+
+    // Lesson Plans (Legacy/Other)
+    match /lesson_plans/{planId} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+
+      match /visuals/{visualId} {
+        allow read: if isAuthenticated() && (get(/databases/$(database)/documents/lesson_plans/$(planId)).data.createdBy == request.auth.uid || isAdmin());
+        allow create: if isAuthenticated() && get(/databases/$(database)/documents/lesson_plans/$(planId)).data.createdBy == request.auth.uid;
+        allow update, delete: if isAuthenticated() && (get(/databases/$(database)/documents/lesson_plans/$(planId)).data.createdBy == request.auth.uid || isAdmin());
+      }
+    }
+
+    // Weekly Plans
+    match /weekly_plans/{planId} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Resources
+    match /resources/{resourceId} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+
+      match /visuals/{visualId} {
+        allow read: if isAuthenticated() && (get(/databases/$(database)/documents/resources/$(resourceId)).data.createdBy == request.auth.uid || isAdmin());
+        allow create: if isAuthenticated() && get(/databases/$(database)/documents/resources/$(resourceId)).data.createdBy == request.auth.uid;
+        allow update, delete: if isAuthenticated() && (get(/databases/$(database)/documents/resources/$(resourceId)).data.createdBy == request.auth.uid || isAdmin());
+      }
+    }
+
+    // Curriculum Progress
+    match /curriculum_progress/{progressId} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Yearly Calendars
+    match /yearly_calendars/{calendarId} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Cycle Pacing Maps
+    match /cycle_pacing_maps/{mapId} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Academic Calendars
+    match /academic_calendars/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Yearly Curriculum Maps
+    match /yearly_curriculum_maps/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Cycle Plans
+    match /cycle_plans/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Weekly Teaching Plans
+    match /weekly_teaching_plans/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Coverage Records
+    match /coverage_records/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Outcome Mastery
+    match /outcome_mastery/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Misconception Logs
+    match /misconception_logs/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Student Support Flags
+    match /student_support_flags/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Assessment Records
+    match /assessment_records/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Teaching Collections
+    match /teaching_collections/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Favorite Items
+    match /favorite_items/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+
+    // Version Records
+    match /version_records/{id} {
+      allow read: if isAuthenticated() && (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isDocOwner() || isAdmin();
+    }
+  }
+}

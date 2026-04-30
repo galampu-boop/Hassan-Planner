@@ -1,0 +1,27 @@
+Grade: Standard 1
+Subject: Mathematics
+Cycle: 1
+Strand: Number and Operations
+Topic: Place Value
+Subtopic: Tens and Ones
+Learning Outcomes:
+- Identify tens and ones in a two-digit number
+- Represent numbers using base-ten blocks
+- Compare two-digit numbers using <, >, and =
+Suggested Lessons: 3
+Suggested Weeks: 1
+
+---
+
+Grade: Standard 1
+Subject: Mathematics
+Cycle: 1
+Strand: Number and Operations
+Topic: Addition within 20
+Subtopic: Basic Facts
+Learning Outcomes:
+- Recall addition facts up to 10
+- Use strategies like counting on to solve addition problems
+- Solve simple word problems involving addition
+Suggested Lessons: 4
+Suggested Weeks: 1
