@@ -1,10 +1,12 @@
-{
-  "projectId": "smartlessonplannerdb",
-  "appId": "1:33904915752:web:6110b74feb5d910c7b4c1d",
-  "apiKey": "AIzaSyBcn-_PH47wzG_8BC-uMEEuMJs9iOpXNIc",
-  "authDomain": "smartlessonplannerdb.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-71262625-e60a-4ea1-bf89-c0bfe8be8baf",
-  "storageBucket": "smartlessonplannerdb.firebasestorage.app",
-  "messagingSenderId": "33904915752",
-  "measurementId": ""
-}
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+
+const firebaseConfig = {
+  apiKey: "PASTE_FROM_FIREBASE",
+  authDomain: "lesson-planner-c9f34.firebaseapp.com",
+  projectId: "lesson-planner-c9f34",
+  appId: "PASTE_FROM_FIREBASE"
+};
+
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
